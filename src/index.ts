@@ -52,20 +52,16 @@ redisConnection.on('ready', async () => {
     }
 });
 
-RedisConnector.isReady = () => {
-    return redisConnection.status === 'ready';
-};
-
 RedisConnector.ping = async () => {
-    return trackPerformance('PING', redisConnection.ping.bind(redisConnection));
+    return trackPerformance('PING', () => redisConnection.ping());
 };
 
 RedisConnector.getInfo = async () => {
-    return trackPerformance('INFO', redisConnection.info.bind(redisConnection));
+    return trackPerformance('GET_INFO', () => redisConnection.info());
 };
 
 RedisConnector.getAllKeys = async () => {
-    return trackPerformance('GET_ALL_KEYS', redisConnection.keys.bind(redisConnection), '*');
+    return trackPerformance('GET_ALL_KEYS', () => redisConnection.keys('*'));
 };
 
 RedisConnector.getAll = async () => {
@@ -80,50 +76,41 @@ RedisConnector.getAll = async () => {
 };
 
 RedisConnector.get = async (key: string) => {
-    return trackPerformance('GET', redisConnection.get.bind(redisConnection), key);
+    return trackPerformance('GET', () => {
+        return redisConnection.get(key);
+    });
 };
 
 RedisConnector.set = async (key: string, value: string) => {
-    return trackPerformance('SET', redisConnection.set.bind(redisConnection), key, value);
+    return trackPerformance('SET', () => redisConnection.set(key, value));
 };
 
 RedisConnector.delete = async (key: string) => {
-    return trackPerformance('DELETE', redisConnection.del.bind(redisConnection), key);
+    return trackPerformance('DELETE', () => redisConnection.del(key));
 };
 
 RedisConnector.flushAll = async () => {
-    return trackPerformance('FLUSH_ALL', redisConnection.flushall.bind(redisConnection));
+    return trackPerformance('FLUSH_ALL', () => redisConnection.flushall());
 };
 
 RedisConnector.listLength = async (listKey: string) => {
-    return trackPerformance('LIST_LENGTH', redisConnection.llen.bind(redisConnection), listKey);
+    return trackPerformance('LIST_LENGTH', () => redisConnection.llen(listKey));
 };
 
 RedisConnector.listPush = async (listKey: string, value: string) => {
-    return trackPerformance(
-        'LIST_PUSH',
-        redisConnection.rpush.bind(redisConnection),
-        listKey,
-        value,
-    );
+    return trackPerformance('LIST_PUSH', () => redisConnection.rpush(listKey, value));
 };
 
 RedisConnector.listPop = async (listKey: string) => {
-    return trackPerformance('LIST_POP', redisConnection.rpop.bind(redisConnection), listKey);
+    return trackPerformance('LIST_POP', () => redisConnection.rpop(listKey));
 };
 
 RedisConnector.hset = async (hashKey: string, field: string, value: string) => {
-    return trackPerformance(
-        'HSET',
-        redisConnection.hset.bind(redisConnection),
-        hashKey,
-        field,
-        value,
-    );
+    return trackPerformance('HSET', () => redisConnection.hset(hashKey, field, value));
 };
 
 RedisConnector.hget = async (hashKey: string, field: string) => {
-    return trackPerformance('HGET', redisConnection.hget.bind(redisConnection), hashKey, field);
+    return trackPerformance('HGET', () => redisConnection.hget(hashKey, field));
 };
 
 RegisterCommand(
@@ -155,4 +142,11 @@ const RedisExports = {
     verifyHashKey: verifyHashKey,
 };
 
-export { RedisExports };
+for (const [key, value] of Object.entries(RedisExports)) {
+    if (typeof value === 'function') {
+        console.log(`Exporting function: ${key} with value ${value}`);
+        exports(key, value);
+    } else {
+        console.warn(`Skipping non-function export: ${key}`);
+    }
+}
