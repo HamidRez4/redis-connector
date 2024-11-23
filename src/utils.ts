@@ -4,12 +4,17 @@ import * as crypto from 'node:crypto';
  * Generates an SHA-256 hash key for a given input string.
  *
  * @param {string} input - The input string to be hashed.
+ * @param {Function} callback
  * @return {string} - The resulting hash key as a hexadecimal string.
  */
-export function generateHashKey(input: string): string {
+export function generateHashKey(input: string, callback?: Function): string {
     const hash: crypto.Hash = crypto.createHash('sha256');
     hash.update(input);
-    return hash.digest('hex');
+    const hashKey: string = hash.digest('hex');
+    if (callback) {
+        callback(hashKey);
+    }
+    return hashKey;
 }
 
 /**
@@ -17,11 +22,16 @@ export function generateHashKey(input: string): string {
  *
  * @param {string} input - The input data to hash and verify.
  * @param {string} storedHash - The previously stored hash to compare against.
+ * @param {Function} callback
  * @return {boolean} - Returns true if the hashed input matches the stored hash, otherwise false.
  */
-export function verifyHashKey(input: string, storedHash: string): boolean {
+export function verifyHashKey(input: string, storedHash: string, callback?: Function): boolean {
     const inputHash: string = generateHashKey(input);
-    return inputHash === storedHash;
+    const result: boolean = inputHash === storedHash;
+    if (callback) {
+        callback(result);
+    }
+    return result;
 }
 
 const performanceStats = new Map<string, { count: number; totalDuration: number }>();
