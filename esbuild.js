@@ -24,6 +24,7 @@ writeFileSync(
 writeFileSync('fxmanifest.lua',
 `fx_version 'cerulean'
 game 'common'
+
 use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 
@@ -43,7 +44,8 @@ convar_category 'RedisConnector' {
         { 'Redis Port',     'redis_port',       'CV_INT',     '6379' },
         { 'Redis User',     'redis_user',       'CV_STRING',  '' },
         { 'Redis Password', 'redis_password',   'CV_STRING',  '' },
-        { 'Redis Debug',    'redis_debug_mode', 'CV_BOOL',    'false' }
+        { 'Redis Debug',    'redis_debug_mode', 'CV_BOOL',    'false' },
+        { 'Redis SSL Usage, 'redis_use_ssl',    'CV_BOOL',    'false' },
     }
 }
 `);
@@ -51,14 +53,14 @@ convar_category 'RedisConnector' {
 build({
     bundle: true,
     entryPoints: ['src/index.ts'],
-    outfile: 'lib/index.js',
+    outfile: 'dist/index.js',
     keepNames: true,
     legalComments: 'inline',
     platform: 'node',
     target: ['node16'],
     format: 'cjs',
     logLevel: 'info',
-    minify: true,
+    minify: false,
     resolveExtensions: ['.ts', '.js'],
 })
     .then(() => {
