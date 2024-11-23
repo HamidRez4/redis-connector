@@ -52,20 +52,29 @@ redisConnection.on('ready', async () => {
     }
 });
 
-RedisConnector.ping = async () => {
-    return trackPerformance('PING', () => redisConnection.ping());
+function executeCallback(callback?: Function, ...args: any[]) {
+    if (callback && typeof callback === 'function') {
+        callback(...args);
+    }
+}
+
+RedisConnector.ping = async (callback?: Function) => {
+    const result = await trackPerformance('PING', () => redisConnection.ping());
+    executeCallback(callback, result);
 };
 
-RedisConnector.getInfo = async () => {
-    return trackPerformance('GET_INFO', () => redisConnection.info());
+RedisConnector.getInfo = async (callback?: Function) => {
+    const result = await trackPerformance('GET_INFO', () => redisConnection.info());
+    executeCallback(callback, result);
 };
 
-RedisConnector.getAllKeys = async () => {
-    return trackPerformance('GET_ALL_KEYS', () => redisConnection.keys('*'));
+RedisConnector.getAllKeys = async (callback?: Function) => {
+    const result = await trackPerformance('GET_ALL_KEYS', () => redisConnection.keys('*'));
+    executeCallback(callback, result);
 };
 
-RedisConnector.getAll = async () => {
-    return trackPerformance('GET_ALL', async () => {
+RedisConnector.getAll = async (callback?: Function) => {
+    const result = await trackPerformance('GET_ALL', async () => {
         const keys = await redisConnection.keys('*');
         return await Promise.all(
             keys.map(async (key: any) => {
@@ -73,44 +82,53 @@ RedisConnector.getAll = async () => {
             }),
         );
     });
+
+    executeCallback(callback, result);
 };
 
-RedisConnector.get = async (key: string) => {
-    return trackPerformance('GET', () => {
-        return redisConnection.get(key);
-    });
+RedisConnector.get = async (key: string, callback?: Function) => {
+    const result = await trackPerformance('GET', () => redisConnection.get(key));
+    executeCallback(callback, result);
 };
 
-RedisConnector.set = async (key: string, value: string) => {
-    return trackPerformance('SET', () => redisConnection.set(key, value));
+RedisConnector.set = async (key: string, value: string, callback?: Function) => {
+    const result = await trackPerformance('SET', () => redisConnection.set(key, value));
+    executeCallback(callback, result);
 };
 
-RedisConnector.delete = async (key: string) => {
-    return trackPerformance('DELETE', () => redisConnection.del(key));
+RedisConnector.delete = async (key: string, callback?: Function) => {
+    const result = await trackPerformance('DELETE', () => redisConnection.del(key));
+    executeCallback(callback, result);
 };
 
-RedisConnector.flushAll = async () => {
-    return trackPerformance('FLUSH_ALL', () => redisConnection.flushall());
+RedisConnector.flushAll = async (callback?: Function) => {
+    const result = await trackPerformance('FLUSH_ALL', () => redisConnection.flushall());
+    executeCallback(callback, result);
 };
 
-RedisConnector.listLength = async (listKey: string) => {
-    return trackPerformance('LIST_LENGTH', () => redisConnection.llen(listKey));
+RedisConnector.listLength = async (listKey: string, callback?: Function) => {
+    const result = await trackPerformance('LIST_LENGTH', () => redisConnection.llen(listKey));
+    executeCallback(callback, result);
 };
 
-RedisConnector.listPush = async (listKey: string, value: string) => {
-    return trackPerformance('LIST_PUSH', () => redisConnection.rpush(listKey, value));
+RedisConnector.listPush = async (listKey: string, value: string, callback?: Function) => {
+    const result = await trackPerformance('LIST_PUSH', () => redisConnection.rpush(listKey, value));
+    executeCallback(callback, result);
 };
 
-RedisConnector.listPop = async (listKey: string) => {
-    return trackPerformance('LIST_POP', () => redisConnection.rpop(listKey));
+RedisConnector.listPop = async (listKey: string, callback?: Function) => {
+    const result = await trackPerformance('LIST_POP', () => redisConnection.rpop(listKey));
+    executeCallback(callback, result);
 };
 
-RedisConnector.hset = async (hashKey: string, field: string, value: string) => {
-    return trackPerformance('HSET', () => redisConnection.hset(hashKey, field, value));
+RedisConnector.hset = async (hashKey: string, field: string, value: string, callback?: Function) => {
+    const result = await trackPerformance('HSET', () => redisConnection.hset(hashKey, field, value));
+    executeCallback(callback, result);
 };
 
-RedisConnector.hget = async (hashKey: string, field: string) => {
-    return trackPerformance('HGET', () => redisConnection.hget(hashKey, field));
+RedisConnector.hget = async (hashKey: string, field: string, callback?: Function) => {
+    const result = await trackPerformance('HGET', () => redisConnection.hget(hashKey, field));
+    executeCallback(callback, result);
 };
 
 RegisterCommand(
