@@ -1,6 +1,13 @@
-import {Redis} from "ioredis";
-import {redisDebugMode, redisHost, redisPassword, redisPort, redisUser, redisUseSsl} from "./config.ts";
-import {generateHashKey, logPerformanceStats, trackPerformance, verifyHashKey} from "./utils.ts";
+import { Redis } from 'ioredis';
+import {
+    redisDebugMode,
+    redisHost,
+    redisPassword,
+    redisPort,
+    redisUser,
+    redisUseSsl,
+} from './config.ts';
+import { generateHashKey, logPerformanceStats, trackPerformance, verifyHashKey } from './utils.ts';
 
 const RedisConnector: Record<string, Function> = {};
 
@@ -12,7 +19,7 @@ if (!redisUseSsl) {
         port: redisPort,
         username: redisUser === '' ? undefined : redisUser,
         password: redisPassword,
-    })
+    });
 } else {
     redisConnection = new Redis({
         host: redisHost,
@@ -20,23 +27,23 @@ if (!redisUseSsl) {
         username: redisUser === '' ? undefined : redisUser,
         password: redisPassword,
         tls: {
-            rejectUnauthorized: true
-        }
-    })
+            rejectUnauthorized: true,
+        },
+    });
 }
 
-redisConnection.on("connect", () => {
-    console.log("Redis connection established.");
+redisConnection.on('connect', () => {
+    console.log('Redis connection established.');
 });
 
-redisConnection.on("error", (err: Error) => {
-    console.error("⚠️ Redis connection error:", err);
+redisConnection.on('error', (err: Error) => {
+    console.error('⚠️ Redis connection error:', err);
 });
 
-redisConnection.on("ready", async () => {
+redisConnection.on('ready', async () => {
     const info = await redisConnection.info();
     const versionMatch = info.match(/redis_version:(\d+\.\d+\.\d+)/);
-    const redisVersion = versionMatch ? versionMatch[1] : "unknown";
+    const redisVersion = versionMatch ? versionMatch[1] : 'unknown';
 
     console.log(`[Redis-${redisVersion}] Redis is ready. ✅`);
 
@@ -46,124 +53,88 @@ redisConnection.on("ready", async () => {
 });
 
 RedisConnector.isReady = () => {
-    return redisConnection.status === "ready";
-}
+    return redisConnection.status === 'ready';
+};
 
 RedisConnector.ping = async () => {
-    return trackPerformance(
-        "PING",
-        redisConnection.ping.bind(redisConnection),
-    );
+    return trackPerformance('PING', redisConnection.ping.bind(redisConnection));
 };
 
 RedisConnector.getInfo = async () => {
-    return trackPerformance(
-        "INFO",
-        redisConnection.info.bind(redisConnection)
-    );
+    return trackPerformance('INFO', redisConnection.info.bind(redisConnection));
 };
 
 RedisConnector.getAllKeys = async () => {
-    return trackPerformance(
-        "GET_ALL_KEYS",
-        redisConnection.keys.bind(redisConnection),
-        '*'
-    );
+    return trackPerformance('GET_ALL_KEYS', redisConnection.keys.bind(redisConnection), '*');
 };
 
 RedisConnector.getAll = async () => {
-    return trackPerformance(
-        "GET_ALL",
-        async () => {
-            const keys = await redisConnection.keys('*');
-            return await Promise.all(keys.map(async (key: any) => {
-                return {[key]: await redisConnection.get(key)};
-            }));
-        }
-    );
+    return trackPerformance('GET_ALL', async () => {
+        const keys = await redisConnection.keys('*');
+        return await Promise.all(
+            keys.map(async (key: any) => {
+                return { [key]: await redisConnection.get(key) };
+            }),
+        );
+    });
 };
 
 RedisConnector.get = async (key: string) => {
-    return trackPerformance(
-        "GET",
-        redisConnection.get.bind(redisConnection),
-        key
-    );
+    return trackPerformance('GET', redisConnection.get.bind(redisConnection), key);
 };
 
 RedisConnector.set = async (key: string, value: string) => {
-    return trackPerformance(
-        "SET",
-        redisConnection.set.bind(redisConnection),
-        key,
-        value
-    );
+    return trackPerformance('SET', redisConnection.set.bind(redisConnection), key, value);
 };
 
 RedisConnector.delete = async (key: string) => {
-    return trackPerformance(
-        "DELETE",
-        redisConnection.del.bind(redisConnection),
-        key
-    );
+    return trackPerformance('DELETE', redisConnection.del.bind(redisConnection), key);
 };
 
 RedisConnector.flushAll = async () => {
-    return trackPerformance(
-        "FLUSH_ALL",
-        redisConnection.flushall.bind(redisConnection)
-    );
+    return trackPerformance('FLUSH_ALL', redisConnection.flushall.bind(redisConnection));
 };
 
 RedisConnector.listLength = async (listKey: string) => {
-    return trackPerformance(
-        "LIST_LENGTH",
-        redisConnection.llen.bind(redisConnection),
-        listKey
-    );
+    return trackPerformance('LIST_LENGTH', redisConnection.llen.bind(redisConnection), listKey);
 };
 
 RedisConnector.listPush = async (listKey: string, value: string) => {
     return trackPerformance(
-        "LIST_PUSH",
+        'LIST_PUSH',
         redisConnection.rpush.bind(redisConnection),
         listKey,
-        value
+        value,
     );
 };
 
 RedisConnector.listPop = async (listKey: string) => {
-    return trackPerformance(
-        "LIST_POP",
-        redisConnection.rpop.bind(redisConnection),
-        listKey
-    );
+    return trackPerformance('LIST_POP', redisConnection.rpop.bind(redisConnection), listKey);
 };
 
 RedisConnector.hset = async (hashKey: string, field: string, value: string) => {
     return trackPerformance(
-        "HSET",
+        'HSET',
         redisConnection.hset.bind(redisConnection),
         hashKey,
         field,
-        value
+        value,
     );
 };
 
 RedisConnector.hget = async (hashKey: string, field: string) => {
-    return trackPerformance(
-        "HGET",
-        redisConnection.hget.bind(redisConnection),
-        hashKey,
-        field
-    );
+    return trackPerformance('HGET', redisConnection.hget.bind(redisConnection), hashKey, field);
 };
 
-RegisterCommand("redis_stats", (source: number) => {
-    if (source === 0) {
-        logPerformanceStats();
-    }
-}, true)
+RegisterCommand(
+    'redis_stats',
+    (source: number) => {
+        if (source === 0) {
+            logPerformanceStats();
+        }
+    },
+    true,
+);
 
 const RedisExports = {
     isReady: RedisConnector.isReady,

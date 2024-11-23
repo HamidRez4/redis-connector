@@ -1,4 +1,4 @@
-import * as crypto from "node:crypto";
+import * as crypto from 'node:crypto';
 
 /**
  * Generates an SHA-256 hash key for a given input string.
@@ -7,9 +7,9 @@ import * as crypto from "node:crypto";
  * @return {string} - The resulting hash key as a hexadecimal string.
  */
 export function generateHashKey(input: string): string {
-    const hash: crypto.Hash = crypto.createHash("sha256");
+    const hash: crypto.Hash = crypto.createHash('sha256');
     hash.update(input);
-    return hash.digest("hex");
+    return hash.digest('hex');
 }
 
 /**
@@ -34,7 +34,11 @@ const performanceStats = new Map<string, { count: number; totalDuration: number 
  * @param {...any} args - The arguments to be passed to the Redis command.
  * @return {Promise<any>} - A promise that resolves to the result of the Redis command.
  */
-export async function trackPerformance(command: string, redisCommand: Function, ...args: any[]): Promise<any> {
+export async function trackPerformance(
+    command: string,
+    redisCommand: Function,
+    ...args: any[]
+): Promise<any> {
     const startTime = Date.now();
     const result = await redisCommand(...args);
     const duration = Date.now() - startTime;
@@ -69,11 +73,11 @@ export function resetPerformanceStats(): void {
  */
 export function logPerformanceStats(): void {
     if (performanceStats.size === 0) {
-        console.log("No performance data available.");
+        console.log('No performance data available.');
         return;
     }
 
-    console.log("Redis Performance Statistics:");
+    console.log('Redis Performance Statistics:');
 
     performanceStats.forEach((stats, command) => {
         const avgDuration = stats.totalDuration / stats.count;
@@ -81,6 +85,6 @@ export function logPerformanceStats(): void {
         console.log(`  Executions: ${stats.count}`);
         console.log(`  Total Duration: ${stats.totalDuration} ms`);
         console.log(`  Average Duration: ${avgDuration.toFixed(3)} ms`);
-        console.log("--------------------------------------------");
+        console.log('--------------------------------------------');
     });
 }

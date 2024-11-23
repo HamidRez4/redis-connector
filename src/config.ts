@@ -9,7 +9,7 @@
  * @type {string}
  * @default "127.0.0.1"
  */
-export const redisHost: string = GetConvar("redis_host", "127.0.0.1");
+export const redisHost: string = GetConvar('redis_host', '127.0.0.1');
 
 /**
  * Port of redis server
@@ -23,25 +23,25 @@ export const redisPort: number = GetConvarInt('redis_port', 6379);
  * @type {string}
  * @default ''
  */
-export const redisUser: string = GetConvar("redis_user", '');
+export const redisUser: string = GetConvar('redis_user', '');
 
 /**
  * Password for Redis connection. If not set, no password is used
  * @type {string}
  * @default ''
  */
-export const redisPassword: string = GetConvar("redis_password", "");
+export const redisPassword: string = GetConvar('redis_password', '');
 
 /**
  * Whether Redis debug mode is enabled.
  * @type {boolean}
  * @default false
  */
-export const redisDebugMode: boolean = GetConvarBool("redis_debug_mode", false);
+export const redisDebugMode: boolean = GetConvarBool('redis_debug_mode', false);
 
 /**
  * Whether Redis ssl mode is enabled.
  * @type {boolean}
  * @default false
  */
-export const redisUseSsl: boolean = GetConvarBool("redis_use_ssl", false);
+export const redisUseSsl: boolean = GetConvarBool('redis_use_ssl', false);
