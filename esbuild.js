@@ -40,12 +40,12 @@ server_script 'dist/index.js'
 convar_category 'RedisConnector' {
     'Configuration',
     {
-        { 'Redis Host',     'redis_host',       'CV_STRING',  '127.0.0.1' },
-        { 'Redis Port',     'redis_port',       'CV_INT',     '6379' },
-        { 'Redis User',     'redis_user',       'CV_STRING',  '' },
-        { 'Redis Password', 'redis_password',   'CV_STRING',  '' },
-        { 'Redis Debug',    'redis_debug_mode', 'CV_BOOL',    'false' },
-        { 'Redis SSL Usage, 'redis_use_ssl',    'CV_BOOL',    'false' },
+        { 'Redis Host',         'redis_host',       'CV_STRING',  '127.0.0.1' },
+        { 'Redis Port',         'redis_port',       'CV_INT',     '6379' },
+        { 'Redis User',         'redis_user',       'CV_STRING',  '' },
+        { 'Redis Password',     'redis_password',   'CV_STRING',  '' },
+        { 'Redis Debug',        'redis_debug_mode', 'CV_BOOL',    'false' },
+        { 'Redis SSL Usage',    'redis_use_ssl',    'CV_BOOL',    'false' },
     }
 }
 `);
