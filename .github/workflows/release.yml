@@ -1,9 +1,6 @@
-name: Release
+name: Manual Release
 
 on:
-  push:
-    tags:
-      - 'v.*.*.*'
   workflow_dispatch:
     inputs:
       tag:
@@ -53,7 +50,7 @@ jobs:
         if: success()
         run: pnpm run build
         env:
-          RELEASE_VERSION: ${{ github.ref_name }}
+          RELEASE_VERSION: ${{ github.event.inputs.tag }}
 
       - name: Update repo
         if: success()
@@ -61,7 +58,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "9848645+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -am '${{ github.ref_name }}'
+          git commit -am '${{ github.event.inputs.tag }}'
           git push
 
       - name: Bundle files
@@ -79,7 +76,7 @@ jobs:
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          title: ${{ env.RELEASE_VERSION }}
+          title: ${{ github.event.inputs.tag }}
           prerelease: false
           automatic_release_tag: '${{ github.event.inputs.tag }}'
           files: redis-connector.zip
