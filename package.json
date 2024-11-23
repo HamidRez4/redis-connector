@@ -1,0 +1,56 @@
+{
+  "name": "redis-connector",
+  "version": "0.2.0",
+  "author": "Riyane <Purpose-Dev>",
+  "description": "Redis Connector for FiveM servers",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "keywords": [
+    "fivem",
+    "typescript",
+    "javascript",
+    "redis",
+    "connector"
+  ],
+  "files": [
+    "dist/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Purpose-Dev/redis-connector.git"
+  },
+  "homepage": "https://github.com/Purpose-Dev/redis-connector",
+  "bugs": {
+    "url": "https://github.com/Purpose-Dev/redis-connector/issues",
+    "email": "purpose@universalcube.xyz"
+  },
+  "funding": {
+    "url": "https://ko-fi.com/purpose",
+    "type": "ko_fi"
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "format": "prettier --write \"src/**/*.{ts,js,json}\"",
+    "lint": "eslint",
+    "prepare": "pnpm run build",
+    "prepublishOnly": "pnpm run lint",
+    "preversion": "pnpm run lint",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@citizenfx/server": "2.0.11427-1",
+    "@types/node": "^22.9.3",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "ioredis": "^5.4.1"
+  }
+}
