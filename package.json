@@ -1,6 +1,6 @@
 {
   "name": "redis-connector",
-  "version": "main",
+  "version": "1.0.0",
   "author": "Riyane <Purpose-Dev>",
   "description": "Redis Connector for FiveM servers",
   "license": "MIT",
