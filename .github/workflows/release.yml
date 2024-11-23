@@ -81,6 +81,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           title: ${{ env.RELEASE_VERSION }}
           prerelease: false
+          automatic_release_tag: '${{ github.event.inputs.tag }}'
           files: redis-connector.zip
         env:
           CI: false
