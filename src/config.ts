@@ -38,3 +38,10 @@ export const redisPassword: string = GetConvar("redis_password", "");
  * @default false
  */
 export const redisDebugMode: boolean = GetConvarBool("redis_debug_mode", false);
+
+/**
+ * Whether Redis ssl mode is enabled.
+ * @type {boolean}
+ * @default false
+ */
+export const redisUseSsl: boolean = GetConvarBool("redis_use_ssl", false);

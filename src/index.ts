@@ -1,18 +1,29 @@
 import {Redis} from "ioredis";
-import {redisDebugMode, redisHost, redisPassword, redisPort, redisUser} from "./config.ts";
+import {redisDebugMode, redisHost, redisPassword, redisPort, redisUser, redisUseSsl} from "./config.ts";
 import {generateHashKey, logPerformanceStats, trackPerformance, verifyHashKey} from "./utils.ts";
 
 const RedisConnector: Record<string, Function> = {};
 
-const redisConnection = new Redis({
-    host: redisHost,
-    port: redisPort,
-    username: redisUser === '' ? undefined : redisUser,
-    password: redisPassword,
-    tls: {
-        rejectUnauthorized: true
-    }
-})
+let redisConnection: Redis;
+
+if (!redisUseSsl) {
+    redisConnection = new Redis({
+        host: redisHost,
+        port: redisPort,
+        username: redisUser === '' ? undefined : redisUser,
+        password: redisPassword,
+    })
+} else {
+    redisConnection = new Redis({
+        host: redisHost,
+        port: redisPort,
+        username: redisUser === '' ? undefined : redisUser,
+        password: redisPassword,
+        tls: {
+            rejectUnauthorized: true
+        }
+    })
+}
 
 redisConnection.on("connect", () => {
     console.log("Redis connection established.");
