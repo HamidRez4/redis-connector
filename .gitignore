@@ -21,3 +21,4 @@ node_modules/
 .vscode-test
 dist
 pnpm-lock.yaml
+certs
