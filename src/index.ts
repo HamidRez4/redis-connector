@@ -73,6 +73,11 @@ RedisConnector.getAllKeys = async (callback?: Function) => {
     executeCallback(callback, result);
 };
 
+RedisConnector.getAllKeysByPattern = async (pattern: string, callback?: Function) => {
+    const result = await trackPerformance('GET_ALL_KEYS_BY_PATTERN', () => redisConnection.keys(pattern));
+    executeCallback(callback, result);
+};
+
 RedisConnector.getAll = async (callback?: Function) => {
     const result = await trackPerformance('GET_ALL', async () => {
         const keys = await redisConnection.keys('*');
@@ -146,6 +151,7 @@ const RedisExports = {
     ping: RedisConnector.ping,
     getInfo: RedisConnector.getInfo,
     getAllKeys: RedisConnector.getAllKeys,
+    getAllKeysByPattern : RedisConnector.getAllKeysByPattern,
     getAll: RedisConnector.getAll,
     get: RedisConnector.get,
     set: RedisConnector.set,
